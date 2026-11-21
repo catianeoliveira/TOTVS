@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Operacional — Ativação Serviços Varejo | Lojas H&M (Linx / TOTVS)</title>
+    <!-- Carregamento do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonte Inter para leitura limpa e corporativa -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Ícones Phosphor Icons para interface limpa -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        totvs: {
+                            dark: '#002244',
+                            navy: '#002244',
+                            cyan: '#00B4D8',
+                            blue: '#0077B6',
+                            bg: '#F8FAFC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-totvs-bg text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Cabeçalho Corporativo TOTVS / Linx -->
+    <header class="bg-gradient-to-r from-totvs-dark via-[#003366] to-totvs-blue text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+            <!-- Barra superior com identificação institucional -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide">
+                    <span class="w-2.5 h-2.5 rounded-full bg-totvs-cyan animate-pulse"></span>
+                    <span>ATIVAÇÃO SERVIÇOS VAREJO</span>
+                </div>
+                <span class="text-xs sm:text-sm text-sky-100 font-semibold bg-totvs-dark/60 px-3.5 py-1.5 rounded-full border border-white/15">
+                    TOTVS | Linx • Base de Conhecimento H&M
+                </span>
+            </div>
+
+            <!-- Título e Subtítulo -->
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-2">
+                FAQ Operacional — Lojas H&M
+            </h1>
+            <p class="text-sm sm:text-base lg:text-lg text-sky-100 max-w-3xl font-normal">
+                Ativação Serviços Varejo • Guia rápido de consulta para atendimento em PDV, Self Checkout e sistemas integrados
+            </p>
+
+            <!-- Barra de Busca Integrada -->
+            <div class="mt-6 sm:mt-8 max-w-3xl">
+                <div class="relative flex items-center">
+                    <i class="ph ph-magnifying-glass absolute left-4 text-slate-400 text-xl pointer-events-none"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Pesquisar dúvida, erro, sistema ou tag (ex: OmniPOS, Consultoria, TEF, Reshop, PINPAD...)" 
+                        class="w-full pl-12 pr-12 py-3.5 sm:py-4 rounded-xl bg-white text-slate-900 placeholder-slate-400 shadow-md border-2 border-transparent focus:border-totvs-cyan focus:outline-none text-sm sm:text-base transition"
+                    >
+                    <button 
+                        id="clearSearchBtn" 
+                        title="Limpar pesquisa"
+                        class="hidden absolute right-3 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+                    >
+                        <i class="ph ph-x-circle text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+        <!-- Filtros de Categoria + Controles de Acordeão -->
+        <section class="mb-6 space-y-4">
+            <!-- Botões de Categoria (Scroll horizontal suave no mobile) -->
+            <div id="categoryFilters" class="flex items-center gap-2 overflow-x-auto pb-2">
+                <!-- Os botões serão injetados dinamicamente via JavaScript -->
+            </div>
+
+            <!-- Barra de Status e Ações Rápidas -->
+            <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm">
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                    <i class="ph ph-list-checks text-totvs-blue text-lg"></i>
+                    <span>Exibindo <strong id="visibleCount" class="text-totvs-navy">20</strong> de <strong id="totalCount">20</strong> procedimentos</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button 
+                        id="expandAllBtn" 
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-totvs-blue bg-sky-50 hover:bg-sky-100 border border-sky-200/70 transition cursor-pointer"
+                    >
+                        <i class="ph ph-arrows-out-line-vertical text-base"></i>
+                        <span>Expandir Tudo</span>
+                    </button>
+                    <button 
+                        id="collapseAllBtn" 
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition cursor-pointer"
+                    >
+                        <i class="ph ph-arrows-in-line-vertical text-base"></i>
+                        <span>Recolher Tudo</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lista de Perguntas e Respostas (Acordeão) -->
+        <section id="faqContainer" class="space-y-4">
+            <!-- Cards da FAQ renderizados pelo JavaScript -->
+        </section>
+
+        <!-- Estado Vazio (Quando a busca não encontra resultados) -->
+        <div id="emptyState" class="hidden bg-white rounded-2xl border border-slate-200 p-10 text-center shadow-sm my-6">
+            <div class="w-16 h-16 rounded-full bg-sky-50 text-totvs-blue flex items-center justify-center mx-auto mb-4">
+                <i class="ph ph-magnifying-glass text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-totvs-navy mb-1">Nenhum resultado encontrado</h3>
+            <p class="text-sm text-slate-500 max-w-md mx-auto mb-5">
+                Não encontramos procedimentos com os termos digitados. Tente buscar por palavras-chave mais amplas ou limpe os filtros.
+            </p>
+            <button 
+                id="resetAllBtn" 
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-totvs-blue hover:bg-totvs-navy text-white text-sm font-semibold shadow-sm transition cursor-pointer"
+            >
+                <i class="ph ph-arrow-counter-clockwise"></i>
+                <span>Mostrar todas as perguntas</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Notificação Toast Flutuante (Feedback de cópia) -->
+    <div 
+        id="toastNotification" 
+        class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 bg-totvs-dark text-white px-4 py-3 rounded-xl shadow-xl border border-totvs-cyan/40"
+    >
+        <div class="w-7 h-7 rounded-full bg-totvs-cyan/20 text-totvs-cyan flex items-center justify-center shrink-0">
+            <i class="ph ph-check-bold text-base"></i>
+        </div>
+        <div class="text-sm">
+            <p class="font-semibold">Copiado!</p>
+            <p class="text-xs text-sky-200">Resposta pronta para colar no chat com a loja.</p>
+        </div>
+    </div>
+
+    <!-- Rodapé Corporativo -->
+    <footer class="bg-white border-t border-slate-200 mt-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600">
+            <div class="flex items-center gap-2 font-semibold text-totvs-navy">
+                <span>TOTVS | Linx • Ativação Serviços Varejo — Base de Conhecimento Operacional H&M</span>
+            </div>
+            <p class="text-center sm:text-right text-slate-500">
+                Material de consulta rápida para operação de lojas
+            </p>
+        </div>
+    </footer>
+
+    <!-- Lógica JavaScript Completa -->
+    <script>
+        /**
+         * Base de dados estruturada da FAQ Operacional — Ativação Serviços Varejo (Lojas H&M - Linx / TOTVS)
+         */
+        const faqData = [
+            // Categoria 1: Operação de Caixa (OmniPOS)
+            {
+                id: 1,
+                category: "Operação de Caixa",
+                categoryFull: "Operação de Caixa (OmniPOS)",
+                systems: ["OmniPOS"],
+                actionTag: "Consultoria",
+                question: "Como cancelar um item ou a venda inteira no caixa?",
+                answer: "Acione o DM (Department Manager) para autorizar o cancelamento no sistema OmniPOS e siga o fluxo padrão de exclusão de item ou cancelamento de atendimento."
+            },
+            {
+                id: 2,
+                category: "Operação de Caixa",
+                categoryFull: "Operação de Caixa (OmniPOS)",
+                systems: ["OmniPOS"],
+                actionTag: "Consultoria",
+                question: "Como realizar uma venda com pagamento misto (mais de uma forma de pagamento)?",
+                answer: "No fluxo de finalização da venda no OmniPOS, divida o valor total entre as modalidades desejadas antes de concluir a transação."
+            },
+            {
+                id: 3,
+                category: "Operação de Caixa",
+                categoryFull: "Operação de Caixa (OmniPOS)",
+                systems: ["OmniPOS"],
+                actionTag: "Consultoria",
+                question: "Como registrar a troca de uma mercadoria?",
+                answer: "Utilize a função específica de lançamento de troca diretamente no menu do PDV (OmniPOS) e vincule o novo item ou o crédito gerado."
+            },
+            {
+                id: 4,
+                category: "Operação de Caixa",
+                categoryFull: "Operação de Caixa (OmniPOS)",
+                systems: ["OmniPOS"],
+                actionTag: "Melhoria / Regra",
+                question: "O que fazer quando o preço da etiqueta diverge do valor no PDV?",
+                answer: "Aplique o desconto manual no OmniPOS (com autorização do DM, se necessário) para honrar o valor da etiqueta e reporte a divergência para ajuste sistêmico."
+            },
+
+            // Categoria 2: Descontos & Reshop
+            {
+                id: 5,
+                category: "Descontos & Reshop",
+                categoryFull: "Descontos, Campanhas e Reshop (Vale Omni)",
+                systems: ["OmniPOS", "Reshop"],
+                actionTag: "Consultoria",
+                question: "Como aplicar cupons promocionais e cupom-presente (Reshop)?",
+                answer: "Insira o código do cupom no campo indicado na tela de vendas/pagamento do OmniPOS. Para devoluções ou resgates de Vale Omni, utilize a opção correspondente de resgate de valor no PDV."
+            },
+            {
+                id: 6,
+                category: "Descontos & Reshop",
+                categoryFull: "Descontos, Campanhas e Reshop (Vale Omni)",
+                systems: ["Self Checkout"],
+                actionTag: "Regra Comercial",
+                question: "Como funciona o desconto de 20% da campanha Deals no Self Checkout?",
+                answer: "O desconto da campanha Deals é calculado e aplicado automaticamente apenas na etapa de pagamento, e não na leitura inicial dos itens."
+            },
+            {
+                id: 7,
+                category: "Descontos & Reshop",
+                categoryFull: "Descontos, Campanhas e Reshop (Vale Omni)",
+                systems: ["OmniPOS"],
+                actionTag: "Incidente Sistêmico",
+                question: "O sistema apresenta erro ao finalizar uma venda com desconto no total via cupom. Como agir?",
+                answer: "Trata-se de um incidente sistêmico mapeado. Caso ocorra, acione o time técnico para coleta de logs dos caixas e abertura/acompanhamento do chamado."
+            },
+            {
+                id: 8,
+                category: "Descontos & Reshop",
+                categoryFull: "Descontos, Campanhas e Reshop (Vale Omni)",
+                systems: ["Reshop"],
+                actionTag: "Cloud / Incidente",
+                question: "O sistema Reshop está lento ou oscilando na consulta. O que fazer?",
+                answer: "Aguarde alguns instantes e tente nova consulta. Caso a lentidão persista em múltiplos terminais (Reshop, StaffPOS, SmartPOS), acione o time técnico para validação de servidor junto à Cloud."
+            },
+
+            // Categoria 3: Pagamentos & TEF
+            {
+                id: 9,
+                category: "Pagamentos & TEF",
+                categoryFull: "Pagamentos (TEF, PIX e Pinpad)",
+                systems: ["OmniPOS", "TEF"],
+                actionTag: "Consultoria",
+                question: "Como realizar parcelamento via TEF ou pagamento via PIX no PDV?",
+                answer: "Selecione a opção de pagamento TEF no OmniPOS e escolha a modalidade desejada (Crédito Parcelado ou PIX via TEF) para gerar a cobrança no terminal."
+            },
+            {
+                id: 10,
+                category: "Pagamentos & TEF",
+                categoryFull: "Pagamentos (TEF, PIX e Pinpad)",
+                systems: ["SmartPOS", "Self Checkout"],
+                actionTag: "Time PAY",
+                question: "O que fazer quando aparece o erro \"TENTE DE NOVO EC\" no pagamento por aproximação?",
+                answer: "Tente realizar a leitura novamente ou insira o cartão com chip. Se o erro persistir de forma generalizada, encaminhe a demanda para análise do time de PAY."
+            },
+            {
+                id: 11,
+                category: "Pagamentos & TEF",
+                categoryFull: "Pagamentos (TEF, PIX e Pinpad)",
+                systems: ["OmniPOS"],
+                actionTag: "Hardware",
+                question: "O PINPAD de um caixa específico não lê cartões por aproximação. Como resolver?",
+                answer: "Realize a troca física do PINPAD por um equipamento reserva e reporte o defeito de hardware do terminal antigo para substituição."
+            },
+
+            // Categoria 4: Self Checkout
+            {
+                id: 12,
+                category: "Self Checkout",
+                categoryFull: "Self Checkout",
+                systems: ["Self Checkout"],
+                actionTag: "Incidente",
+                question: "O atendimento no Self Checkout travou na tela \"Processando\". Como destravar?",
+                answer: "Toque na opção para retornar à tela anterior e dê continuidade ao atendimento. Se o travamento ocorreu após queda de internet, feche e reabra o aplicativo após a rede normalizar."
+            },
+            {
+                id: 13,
+                category: "Self Checkout",
+                categoryFull: "Self Checkout",
+                systems: ["Self Checkout"],
+                actionTag: "Operacional",
+                question: "O Self Checkout recusou o pagamento do cliente. O problema é no sistema?",
+                answer: "Na maioria dos casos, trata-se de recusa pelo próprio banco ou emissor do cartão do cliente. Oriente-o a tentar outro cartão ou dirigir-se ao caixa tradicional."
+            },
+            {
+                id: 14,
+                category: "Self Checkout",
+                categoryFull: "Self Checkout",
+                systems: ["Self Checkout"],
+                actionTag: "Consultoria",
+                question: "Como reimprimir um cupom no Self Checkout?",
+                answer: "Acesse o menu operacional do terminal (com apoio do Staff/DM) e selecione a função de reimpressão do último comprovante."
+            },
+
+            // Categoria 5: Cadastros & Linx UX
+            {
+                id: 15,
+                category: "Cadastros & Linx UX",
+                categoryFull: "Cadastros, Acessos e Linx UX",
+                systems: ["OmniPOS"],
+                actionTag: "Consultoria",
+                question: "O sistema não deixa concluir o cadastro do cliente. Por quê?",
+                answer: "Verifique se todos os campos obrigatórios foram preenchidos corretamente. Para dúvidas sobre o programa de fidelidade/clube H&M, siga o fluxo padrão de cadastramento no OmniPOS."
+            },
+            {
+                id: 16,
+                category: "Cadastros & Linx UX",
+                categoryFull: "Cadastros, Acessos e Linx UX",
+                systems: ["Linx UX"],
+                actionTag: "Acessos",
+                question: "Como cadastrar novos usuários ou redefinir senhas de DM no Linx UX?",
+                answer: "A solicitação de criação de acesso ou reset de senha para DMs e Staff deve ser aberta para cadastro e validação diretamente no Linx UX."
+            },
+            {
+                id: 17,
+                category: "Cadastros & Linx UX",
+                categoryFull: "Cadastros, Acessos e Linx UX",
+                systems: ["Linx UX"],
+                actionTag: "P&D",
+                question: "O que fazer em caso de falha na descida de lotes do PDV (ETL) no Linx UX?",
+                answer: "Registre o incidente imediatamente para abertura de demanda junto ao time de P&D."
+            },
+
+            // Categoria 6: Impressoras & Rede
+            {
+                id: 18,
+                category: "Impressoras & Rede",
+                categoryFull: "Impressoras, Periféricos e Conectividade",
+                systems: ["OmniPOS"],
+                actionTag: "Periféricos",
+                question: "A impressora travou ou atolou o papel. Como resolver?",
+                answer: "Abra a tampa da impressora, remova o papel atolado, ajuste o encaixe da bobina, feche a tampa firmemente e solicite a reimpressão do cupom."
+            },
+            {
+                id: 19,
+                category: "Impressoras & Rede",
+                categoryFull: "Impressoras, Periféricos e Conectividade",
+                systems: ["SmartPOS"],
+                actionTag: "Periféricos",
+                question: "O SmartPOS finalizou a venda, mas não imprimiu o cupom fiscal. O que verificar?",
+                answer: "Verifique primeiro se há bobina de papel no compartimento ou se ela está encaixada corretamente antes de escalar o atendimento."
+            },
+            {
+                id: 20,
+                category: "Impressoras & Rede",
+                categoryFull: "Impressoras, Periféricos e Conectividade",
+                systems: ["Self Checkout"],
+                actionTag: "Infraestrutura",
+                question: "O Self Checkout está sem conexão Wi-Fi. Devo conectá-lo ao Wi-Fi da loja?",
+                answer: "Não. Os terminais de Self Checkout não devem utilizar o Wi-Fi comum da loja. Caso haja queda ou lentidão de rede, feche/reabra a aplicação após a estabilização ou acione o time de Infraestrutura."
+            }
+        ];
+
+        // Lista exata das categorias solicitadas
+        const categories = [
+            "Todas",
+            "Operação de Caixa",
+            "Descontos & Reshop",
+            "Pagamentos & TEF",
+            "Self Checkout",
+            "Cadastros & Linx UX",
+            "Impressoras & Rede"
+        ];
+
+        // Estado da aplicação
+        let currentCategory = "Todas";
+        let currentSearch = "";
+        let expandedIds = new Set([1]);
+        let toastTimeout = null;
+
+        // Referências do DOM
+        const searchInput = document.getElementById("searchInput");
+        const clearSearchBtn = document.getElementById("clearSearchBtn");
+        const categoryFiltersEl = document.getElementById("categoryFilters");
+        const faqContainer = document.getElementById("faqContainer");
+        const emptyState = document.getElementById("emptyState");
+        const visibleCountEl = document.getElementById("visibleCount");
+        const totalCountEl = document.getElementById("totalCount");
+        const expandAllBtn = document.getElementById("expandAllBtn");
+        const collapseAllBtn = document.getElementById("collapseAllBtn");
+        const resetAllBtn = document.getElementById("resetAllBtn");
+        const toastNotification = document.getElementById("toastNotification");
+
+        /**
+         * Normaliza textos removendo acentos e convertendo para minúsculas para busca eficiente
+         */
+        function normalizeText(str) {
+            return str
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+        }
+
+        /**
+         * Retorna classes de estilo para o badge de Tipo de Ação
+         */
+        function getActionBadgeStyle(actionTag) {
+            const normalized = normalizeText(actionTag);
+            if (normalized.includes("consultoria") || normalized.includes("operacional") || normalized.includes("acessos")) {
+                return "bg-emerald-50 text-emerald-700 border-emerald-200";
+            }
+            if (normalized.includes("regra") || normalized.includes("melhoria") || normalized.includes("perifericos") || normalized.includes("hardware")) {
+                return "bg-amber-50 text-amber-700 border-amber-200";
+            }
+            if (normalized.includes("incidente") || normalized.includes("cloud") || normalized.includes("infraestrutura") || normalized.includes("pay") || normalized.includes("p&d")) {
+                return "bg-rose-50 text-rose-700 border-rose-200";
+            }
+            return "bg-slate-100 text-slate-700 border-slate-200";
+        }
+
+        /**
+         * Renderiza os botões de filtro por categoria
+         */
+        function renderCategories() {
+            categoryFiltersEl.innerHTML = categories.map(cat => {
+                const isActive = currentCategory === cat;
+                const count = cat === "Todas" 
+                    ? faqData.length 
+                    : faqData.filter(item => item.category === cat).length;
+
+                const activeClasses = isActive
+                    ? "bg-totvs-navy text-white border-totvs-navy shadow-sm"
+                    : "bg-white text-slate-700 border-slate-200 hover:border-totvs-blue hover:text-totvs-blue";
+
+                const badgeClasses = isActive
+                    ? "bg-totvs-cyan text-totvs-dark font-bold"
+                    : "bg-slate-100 text-slate-600";
+
+                return `
+                    <button 
+                        type="button"
+                        onclick="selectCategory('${cat}')"
+                        class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition cursor-pointer ${activeClasses}"
+                    >
+                        <span>${cat}</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs ${badgeClasses}">${count}</span>
+                    </button>
+                `;
+            }).join("");
+        }
+
+        /**
+         * Filtra os itens com base na categoria selecionada e termo pesquisado
+         */
+        function getFilteredItems() {
+            const query = normalizeText(currentSearch.trim());
+
+            return faqData.filter(item => {
+                const matchesCategory = currentCategory === "Todas" || item.category === currentCategory;
+                if (!matchesCategory) return false;
+
+                if (!query) return true;
+
+                const searchableContent = normalizeText(
+                    `${item.question} ${item.answer} ${item.systems.join(" ")} ${item.categoryFull} ${item.actionTag}`
+                );
+                return searchableContent.includes(query);
+            });
+        }
+
+        /**
+         * Renderiza os cards da FAQ
+         */
+        function renderFAQ() {
+            const filteredItems = getFilteredItems();
+            visibleCountEl.textContent = filteredItems.length;
+            totalCountEl.textContent = faqData.length;
+
+            if (filteredItems.length === 0) {
+                faqContainer.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+
+            faqContainer.innerHTML = filteredItems.map(item => {
+                const isExpanded = expandedIds.has(item.id);
+                const actionStyle = getActionBadgeStyle(item.actionTag);
+
+                const systemBadgesHtml = item.systems.map(sys => `
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-sky-50 text-totvs-blue border border-sky-200/80">
+                        <i class="ph ph-desktop"></i>
+                        ${sys}
+                    </span>
+                `).join("");
+
+                return `
+                    <article class="bg-white rounded-2xl border ${isExpanded ? 'border-totvs-blue/50 shadow-md' : 'border-slate-200/90 shadow-sm hover:border-slate-300'} transition-all duration-200 overflow-hidden">
+                        <!-- Cabeçalho Clicável do Acordeão -->
+                        <button 
+                            type="button"
+                            onclick="toggleItem(${item.id})"
+                            aria-expanded="${isExpanded}"
+                            class="w-full text-left px-5 py-4 sm:px-6 sm:py-5 flex items-start justify-between gap-4 cursor-pointer focus:outline-none focus:bg-slate-50/80 transition"
+                        >
+                            <div class="space-y-2.5 flex-1">
+                                <!-- Badges de Sistema, Ação e Categoria -->
+                                <div class="flex flex-wrap items-center gap-2">
+                                    ${systemBadgesHtml}
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold border ${actionStyle}">
+                                        <i class="ph ph-tag"></i>
+                                        ${item.actionTag}
+                                    </span>
+                                    <span class="text-xs font-medium text-slate-400 hidden sm:inline">
+                                        • ${item.categoryFull}
+                                    </span>
+                                </div>
+
+                                <!-- Pergunta -->
+                                <h2 class="text-base sm:text-lg font-bold text-totvs-navy leading-snug">
+                                    <span class="text-totvs-blue mr-1">P${item.id}.</span> ${item.question}
+                                </h2>
+                            </div>
+
+                            <!-- Ícone de Expandir/Recolher -->
+                            <div class="w-9 h-9 rounded-xl ${isExpanded ? 'bg-totvs-blue text-white' : 'bg-slate-100 text-slate-500'} flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                                <i class="ph ph-caret-down text-lg transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}"></i>
+                            </div>
+                        </button>
+
+                        <!-- Corpo da Resposta (Expansível) -->
+                        <div class="${isExpanded ? 'block' : 'hidden'} border-t border-slate-100 bg-slate-50/60 px-5 py-4 sm:px-6 sm:py-5">
+                            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                                <p class="text-sm sm:text-base text-slate-700 leading-relaxed flex-1">
+                                    ${item.answer}
+                                </p>
+
+                                <!-- Botão Copiar Resposta -->
+                                <button 
+                                    type="button"
+                                    id="copyBtn-${item.id}"
+                                    onclick="copyAnswer(event, ${item.id})"
+                                    title="Copiar pergunta e resposta para enviar no atendimento"
+                                    class="self-start sm:self-end shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-totvs-navy bg-white hover:bg-sky-50 hover:text-totvs-blue border border-slate-200 hover:border-totvs-blue/40 shadow-xs transition cursor-pointer"
+                                >
+                                    <i class="ph ph-copy text-base"></i>
+                                    <span>Copiar resposta</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        /**
+         * Alterna o estado aberto/fechado de uma pergunta
+         */
+        function toggleItem(id) {
+            if (expandedIds.has(id)) {
+                expandedIds.delete(id);
+            } else {
+                expandedIds.add(id);
+            }
+            renderFAQ();
+        }
+
+        /**
+         * Seleciona uma categoria de filtro
+         */
+        function selectCategory(category) {
+            currentCategory = category;
+            renderCategories();
+            renderFAQ();
+        }
+
+        /**
+         * Copia a resposta formatada para a área de transferência (compatível com iframes)
+         */
+        function copyAnswer(event, id) {
+            event.stopPropagation();
+            const item = faqData.find(faq => faq.id === id);
+            if (!item) return;
+
+            const textToCopy = `*${item.question}*\n${item.answer}`;
+
+            try {
+                const tempTextarea = document.createElement("textarea");
+                tempTextarea.value = textToCopy;
+                tempTextarea.style.position = "fixed";
+                tempTextarea.style.opacity = "0";
+                document.body.appendChild(tempTextarea);
+                tempTextarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempTextarea);
+
+                // Feedback visual no próprio botão
+                const btn = document.getElementById(`copyBtn-${id}`);
+                if (btn) {
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = `<i class="ph ph-check-bold text-base text-emerald-600"></i><span class="text-emerald-700">Copiado!</span>`;
+                    btn.classList.add("border-emerald-300", "bg-emerald-50");
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.classList.remove("border-emerald-300", "bg-emerald-50");
+                    }, 2000);
+                }
+
+                showToast();
+            } catch (err) {
+                console.error("Erro ao copiar texto:", err);
+            }
+        }
+
+        /**
+         * Exibe notificação visual temporária ao copiar resposta
+         */
+        function showToast() {
+            toastNotification.classList.remove("translate-y-20", "opacity-0");
+            toastNotification.classList.add("translate-y-0", "opacity-100");
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toastNotification.classList.remove("translate-y-0", "opacity-100");
+                toastNotification.classList.add("translate-y-20", "opacity-0");
+            }, 2500);
+        }
+
+        // Eventos da barra de busca
+        searchInput.addEventListener("input", (e) => {
+            currentSearch = e.target.value;
+            clearSearchBtn.classList.toggle("hidden", currentSearch.length === 0);
+
+            if (currentSearch.trim().length > 0) {
+                const matches = getFilteredItems();
+                matches.forEach(m => expandedIds.add(m.id));
+            }
+            renderFAQ();
+        });
+
+        clearSearchBtn.addEventListener("click", () => {
+            currentSearch = "";
+            searchInput.value = "";
+            clearSearchBtn.classList.add("hidden");
+            searchInput.focus();
+            renderFAQ();
+        });
+
+        // Botões Expandir Tudo / Recolher Tudo
+        expandAllBtn.addEventListener("click", () => {
+            const visibleItems = getFilteredItems();
+            visibleItems.forEach(item => expandedIds.add(item.id));
+            renderFAQ();
+        });
+
+        collapseAllBtn.addEventListener("click", () => {
+            expandedIds.clear();
+            renderFAQ();
+        });
+
+        // Botão Resetar Filtros no estado vazio
+        resetAllBtn.addEventListener("click", () => {
+            currentCategory = "Todas";
+            currentSearch = "";
+            searchInput.value = "";
+            clearSearchBtn.classList.add("hidden");
+            renderCategories();
+            renderFAQ();
+        });
+
+        // Inicialização da página
+        renderCategories();
+        renderFAQ();
+    </script>
+</body>
+</html>
